@@ -1,0 +1,517 @@
+{% extends "base.html" %}
+
+{% block title %}для дому — знижки{% endblock %}
+
+{% block content %}
+<style>
+body {
+    font-family: "Apple Chancery", cursive;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff 0%, #fff5e6 25%, #ffe0b3 50%, #fff5e6 75%, #ffffff 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Анимированные домашние элементы на фоне */
+.home-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-home {
+    position: absolute;
+    font-size: 40px;
+    animation: floatHome 20s linear infinite;
+    opacity: 0.3;
+    filter: drop-shadow(0 0 10px rgba(255, 140, 0, 0.4));
+}
+
+@keyframes floatHome {
+    0% {
+        transform: translateX(-100px) translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateX(calc(100vw + 100px)) translateY(-50px) rotate(8deg);
+    }
+    100% {
+        transform: translateX(calc(100vw + 200px)) translateY(0) rotate(0deg);
+    }
+}
+
+/* Светящиеся частицы */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #ffcc80;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+    animation: floatParticle linear infinite;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(100vh) translateX(0) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) translateX(100px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Контейнер */
+.content-wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Заголовок - НЕОНОВЫЙ ЭФФЕКТ */
+h2 {
+    text-align: center;
+    color: #ff8c00;
+    font-size: 3em;
+    margin-bottom: 40px;
+    text-shadow:
+        0 0 10px rgba(255, 140, 0, 0.8),
+        0 0 20px rgba(255, 140, 0, 0.6),
+        0 0 30px rgba(255, 140, 0, 0.4),
+        0 0 40px rgba(255, 102, 0, 0.3);
+    animation: titlePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes titlePulse {
+    from {
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.8),
+            0 0 20px rgba(255, 140, 0, 0.6),
+            0 0 30px rgba(255, 140, 0, 0.4),
+            0 0 40px rgba(255, 102, 0, 0.3);
+    }
+    to {
+        text-shadow:
+            0 0 20px rgba(255, 140, 0, 1),
+            0 0 30px rgba(255, 140, 0, 0.8),
+            0 0 40px rgba(255, 140, 0, 0.6),
+            0 0 60px rgba(255, 102, 0, 0.4),
+            0 0 80px rgba(255, 102, 0, 0.2);
+    }
+}
+
+/* Список */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Карточка товара - СТЕКЛЯННЫЙ ЭФФЕКТ */
+li {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-radius: 25px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 2px solid rgba(255, 140, 0, 0.3);
+    box-shadow:
+        0 10px 40px rgba(255, 140, 0, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.5),
+        inset 0 -10px 20px rgba(255, 140, 0, 0.05);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+li::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+li:hover::before {
+    opacity: 1;
+}
+
+li:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 140, 0, 0.6);
+    box-shadow:
+        0 15px 50px rgba(255, 140, 0, 0.35),
+        inset 0 0 40px rgba(255, 255, 255, 0.6),
+        inset 0 -10px 30px rgba(255, 140, 0, 0.1);
+}
+
+/* КНОПКА ДОБАВИТЬ В ИЗБРАННОЕ С АНИМАЦИЕЙ ГРУЗОВИКА */
+.add-favorite-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 25px;
+    background: rgba(255, 140, 0, 0.15);
+    color: #ff6600;
+    text-decoration: none;
+    border-radius: 25px;
+    border: 2px solid #ff8c00;
+    font-family: "Apple Chancery", cursive;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+        0 0 15px rgba(255, 140, 0, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.add-favorite-btn:hover {
+    background: rgba(255, 140, 0, 0.25);
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 25px rgba(255, 140, 0, 0.7),
+        0 0 40px rgba(255, 102, 0, 0.5),
+        inset 0 0 15px rgba(255, 255, 255, 0.4);
+    text-shadow:
+        0 0 12px rgba(255, 140, 0, 0.7),
+        0 0 20px rgba(255, 140, 0, 0.5);
+}
+
+/* Иконка грузовика */
+.truck-icon {
+    font-size: 1.3em;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+/* Анимация при клике - грузовик уезжает */
+.add-favorite-btn.sending .truck-icon {
+    animation: truckDriveAway 0.8s ease-in forwards;
+}
+
+@keyframes truckDriveAway {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(300px);
+        opacity: 0;
+    }
+}
+
+/* Скрываем текст кнопки во время анимации */
+.add-favorite-btn.sending .btn-text {
+    opacity: 0;
+}
+
+/* Три точки загрузки */
+.loading-dots {
+    display: none;
+    font-size: 1.5em;
+    letter-spacing: 3px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.add-favorite-btn.sending .loading-dots {
+    display: inline-block;
+    animation: dotsPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dotsPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translateX(-50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) scale(1.1);
+    }
+}
+
+/* Статус добавлено */
+.add-favorite-btn.added {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.add-favorite-btn.added .truck-icon {
+    animation: checkBounce 0.5s ease-out;
+}
+
+@keyframes checkBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+/* Текст - НЕОНОВЫЙ ЭФФЕКТ */
+strong {
+    color: #ff6600;
+    font-size: 1.5em;
+    display: block;
+    margin: 15px 0;
+    text-shadow:
+        0 0 8px rgba(255, 102, 0, 0.5),
+        0 0 15px rgba(255, 102, 0, 0.3);
+}
+
+li {
+    color: #333;
+    line-height: 1.8;
+    text-shadow: 0 0 3px rgba(255, 140, 0, 0.1);
+}
+
+/* Изображение - СТЕКЛЯННАЯ РАМКА */
+img {
+    border-radius: 15px;
+    border: 3px solid rgba(255, 140, 0, 0.4);
+    margin: 15px 0;
+    box-shadow:
+        0 8px 25px rgba(255, 140, 0, 0.3),
+        inset 0 0 15px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+img:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 140, 0, 0.7);
+    box-shadow:
+        0 12px 35px rgba(255, 140, 0, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+/* Ссылка - НЕОНОВАЯ КНОПКА */
+a[href*="http"], a[target="_blank"] {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 30px;
+    background: rgba(255, 140, 0, 0.15);
+    color: #ff6600;
+    text-decoration: none;
+    border-radius: 25px;
+    border: 2px solid #ff8c00;
+    font-family: "Apple Chancery", cursive;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow:
+        0 0 15px rgba(255, 140, 0, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+a[href*="http"]:hover, a[target="_blank"]:hover {
+    background: rgba(255, 140, 0, 0.3);
+    transform: translateY(-3px);
+    box-shadow:
+        0 0 25px rgba(255, 140, 0, 0.7),
+        0 0 40px rgba(255, 102, 0, 0.5),
+        0 8px 20px rgba(255, 140, 0, 0.3),
+        inset 0 0 15px rgba(255, 255, 255, 0.4);
+    text-shadow:
+        0 0 12px rgba(255, 140, 0, 0.7),
+        0 0 20px rgba(255, 140, 0, 0.5);
+}
+
+/* Пустое сообщение */
+li:only-child {
+    text-align: center;
+    color: #ff8c00;
+    font-size: 1.5em;
+    font-style: italic;
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.4);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 2em;
+    }
+
+    li {
+        padding: 20px;
+    }
+
+    strong {
+        font-size: 1.3em;
+    }
+}
+</style>
+
+<!-- Анимированный фон с домашними элементами -->
+<div class="home-background">
+    <div class="floating-home" style="top: 10%; animation-delay: 0s;">🏠</div>
+    <div class="floating-home" style="top: 25%; animation-delay: 3s; animation-duration: 25s;">🛋️</div>
+    <div class="floating-home" style="top: 40%; animation-delay: 6s; animation-duration: 22s;">🪴</div>
+    <div class="floating-home" style="top: 55%; animation-delay: 9s; animation-duration: 28s;">🕯️</div>
+    <div class="floating-home" style="top: 70%; animation-delay: 12s; animation-duration: 24s;">🖼️</div>
+    <div class="floating-home" style="top: 85%; animation-delay: 15s; animation-duration: 26s;">💡</div>
+</div>
+
+<!-- Светящиеся частицы -->
+<div class="particles" id="particlesContainer"></div>
+
+<div class="content-wrapper">
+    <h2>✨Знижки на товари для дому✨</h2>
+
+    <ul>
+        {% for item in items %}
+        <li>
+            <!-- Кнопка добавить в избранное с анимацией грузовика -->
+            <a href="#" class="add-favorite-btn like-btn" data-id="{{ item.id }}" data-added="{% if user in item.liked_by.all %}true{% else %}false{% endif %}">
+                <span class="truck-icon">🚚</span>
+                <span class="btn-text">
+                    {% if user in item.liked_by.all %}
+                        Вже в обраному
+                    {% else %}
+                        Додати до обраного
+                    {% endif %}
+                </span>
+                <span class="loading-dots">...</span>
+            </a>
+
+            <br>
+            <strong>{{ item.title }}</strong><br>
+
+            {% if item.image %}
+            <img src="{{ item.image }}" width="150"><br>
+            {% endif %}
+
+            Стара ціна: {{ item.price_old }}€<br>
+            Новая цена: {{ item.price_new }}€<br>
+            Магазин: {{ item.store }}<br>
+
+            <a href="{{ item.url }}" target="_blank">Перейти до магазину →</a>
+        </li>
+        {% empty %}
+        <li>✨Поки що немає знижок товари для дому✨</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+// Создаем светящиеся частицы
+document.addEventListener('DOMContentLoaded', function() {
+    const particlesContainer = document.getElementById('particlesContainer');
+
+    for(let i = 0; i < 25; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (Math.random() * 4 + 3) + 's';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particle.style.width = (Math.random() * 3 + 2) + 'px';
+        particle.style.height = particle.style.width;
+        particlesContainer.appendChild(particle);
+    }
+});
+
+// Функционал добавления в избранное с анимацией грузовика
+document.querySelectorAll('.like-btn').forEach(btn => {
+    // Проверяем начальное состояние
+    if(btn.dataset.added === 'true') {
+        btn.classList.add('added');
+        btn.querySelector('.truck-icon').textContent = '✓';
+    }
+
+    btn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const homeId = btn.dataset.id;
+
+        // ЭТАП 1: Грузовик уезжает (0.8 секунды)
+        btn.classList.add('sending');
+
+        // ЭТАП 2: Через 0.8 сек показываем три точки (1 секунда)
+        setTimeout(() => {
+            // Отправляем запрос на сервер
+            fetch(`/home/toggle-favorite/?id=${homeId}`)
+                .then(res => res.json())
+                .then(data => {
+                    // ЭТАП 3: Через 1 секунду убираем точки и показываем результат
+                    setTimeout(() => {
+                        btn.classList.remove('sending');
+
+                        // Обновляем текст и состояние
+                        const btnText = btn.querySelector('.btn-text');
+                        const truckIcon = btn.querySelector('.truck-icon');
+
+                        if(data.liked) {
+                            // Делаем кнопку зелёной с галочкой
+                            btn.classList.add('added');
+                            btn.dataset.added = 'true';
+                            btnText.textContent = 'Вже в обраному';
+                            truckIcon.textContent = '✓';
+                            truckIcon.style.opacity = '1';
+                            truckIcon.style.transform = 'translateX(0)';
+                        } else {
+                            // Возвращаем кнопку в исходное состояние
+                            btn.classList.remove('added');
+                            btn.dataset.added = 'false';
+                            btnText.textContent = 'Додади до обраного';
+                            truckIcon.textContent = '🚚';
+                            truckIcon.style.opacity = '1';
+                            truckIcon.style.transform = 'translateX(0)';
+                        }
+                    }, 1000);
+                })
+                .catch(err => {
+                    console.error('Ошибка:', err);
+                    btn.classList.remove('sending');
+                    alert('Виникла помилка при додаванні до обраного. Спробуйте ще раз');
+                });
+        }, 800);
+    });
+});
+</script>
+
+{% endblock %}

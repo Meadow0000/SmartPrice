@@ -1,0 +1,511 @@
+{% extends "base.html" %}
+
+{% block title %}Обрані{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: "Apple Chancery", cursive, serif;
+        background: linear-gradient(135deg, #ffffff 0%, #fff5e6 25%, #ffe0b3 50%, #fff5e6 75%, #ffffff 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Стеклянные бабочки за контентом */
+    .butterfly {
+        position: fixed;
+        width: 90px;
+        height: 90px;
+        z-index: 0;
+        animation: fly 20s infinite ease-in-out;
+        filter: drop-shadow(0 0 15px rgba(255, 140, 0, 0.5));
+    }
+
+    .butterfly svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    @keyframes fly {
+        0%, 100% {
+            transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+            transform: translate(400px, -300px) rotate(90deg);
+        }
+        50% {
+            transform: translate(800px, 150px) rotate(180deg);
+        }
+        75% {
+            transform: translate(300px, 400px) rotate(270deg);
+        }
+    }
+
+    .butterfly:nth-child(2) {
+        animation-delay: 4s;
+        animation-duration: 25s;
+        top: 20%;
+        left: 70%;
+    }
+
+    .butterfly:nth-child(3) {
+        animation-delay: 8s;
+        animation-duration: 22s;
+        top: 50%;
+        left: 30%;
+    }
+
+    .butterfly:nth-child(4) {
+        animation-delay: 12s;
+        animation-duration: 28s;
+        top: 70%;
+        left: 80%;
+    }
+
+    .butterfly:nth-child(5) {
+        animation-delay: 16s;
+        animation-duration: 24s;
+        top: 40%;
+        left: 10%;
+    }
+
+    /* Навбар */
+    .navbar {
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(255, 140, 0, 0.15);
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .navbar-brand {
+        font-size: 2em;
+        color: #ff8c00;
+        font-weight: bold;
+        text-decoration: none;
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.5),
+            0 0 20px rgba(255, 140, 0, 0.3);
+    }
+
+    .navbar-menu {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar-link {
+        color: #ff6600;
+        text-decoration: none;
+        font-size: 1.2em;
+        padding: 10px 20px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        text-shadow: 0 0 5px rgba(255, 102, 0, 0.3);
+    }
+
+    .navbar-link:hover {
+        background: rgba(255, 140, 0, 0.15);
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.6),
+            0 0 20px rgba(255, 140, 0, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .favorites-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .favorites-title {
+        text-align: center;
+        color: #ff8c00;
+        font-size: 3.5em;
+        margin-bottom: 10px;
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.6),
+            0 0 20px rgba(255, 140, 0, 0.4),
+            0 0 30px rgba(255, 140, 0, 0.3);
+        animation: neonGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes neonGlow {
+        from {
+            text-shadow:
+                0 0 10px rgba(255, 140, 0, 0.6),
+                0 0 20px rgba(255, 140, 0, 0.4),
+                0 0 30px rgba(255, 140, 0, 0.3);
+        }
+        to {
+            text-shadow:
+                0 0 20px rgba(255, 140, 0, 0.8),
+                0 0 30px rgba(255, 140, 0, 0.6),
+                0 0 40px rgba(255, 140, 0, 0.4),
+                0 0 60px rgba(255, 102, 0, 0.3);
+        }
+    }
+
+    .favorites-subtitle {
+        text-align: center;
+        color: #ff8c00;
+        font-size: 1.5em;
+        margin-bottom: 50px;
+        text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+    }
+
+    /* Усиленный эффект стекла */
+    .category {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(40px) saturate(180%);
+        -webkit-backdrop-filter: blur(40px) saturate(180%);
+        border-radius: 30px;
+        padding: 40px;
+        margin-bottom: 40px;
+        border: 2px solid rgba(255, 140, 0, 0.3);
+        box-shadow:
+            0 8px 32px 0 rgba(255, 140, 0, 0.2),
+            inset 0 0 30px rgba(255, 255, 255, 0.6),
+            inset 0 -10px 20px rgba(255, 140, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .category:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 140, 0, 0.5);
+        box-shadow:
+            0 12px 40px 0 rgba(255, 140, 0, 0.3),
+            inset 0 0 40px rgba(255, 255, 255, 0.7),
+            inset 0 -10px 30px rgba(255, 140, 0, 0.1);
+    }
+
+    .category h3 {
+        color: #ff8c00;
+        font-size: 2.2em;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(255, 140, 0, 0.3);
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.5),
+            0 0 20px rgba(255, 140, 0, 0.3);
+    }
+
+    .items-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .item {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 140, 0, 0.25);
+        box-shadow:
+            inset 0 0 20px rgba(255, 255, 255, 0.5),
+            0 4px 15px rgba(255, 140, 0, 0.1);
+    }
+
+    .item:hover {
+        border-color: rgba(255, 140, 0, 0.5);
+        transform: translateX(12px);
+        box-shadow:
+            0 0 25px rgba(255, 140, 0, 0.25),
+            inset 0 0 30px rgba(255, 255, 255, 0.6);
+    }
+
+    .item-link {
+        color: #ff6600;
+        font-size: 1.4em;
+        font-weight: bold;
+        text-shadow: 0 0 8px rgba(255, 102, 0, 0.3);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .item-link:hover {
+        color: #ff8c00;
+        text-shadow: 0 0 12px rgba(255, 140, 0, 0.6);
+    }
+
+    /* Неоновая кнопка */
+    .unlike-btn {
+        background: rgba(255, 140, 0, 0.15);
+        color: #ff6600;
+        border: 2px solid #ff8c00;
+        padding: 12px 25px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-family: "Apple Chancery", cursive, serif;
+        font-size: 1.1em;
+        transition: all 0.3s ease;
+        box-shadow:
+            0 0 10px rgba(255, 140, 0, 0.4),
+            inset 0 0 10px rgba(255, 255, 255, 0.3);
+        text-shadow: 0 0 5px rgba(255, 140, 0, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .unlike-btn:hover {
+        background: rgba(255, 140, 0, 0.3);
+        transform: scale(1.05);
+        box-shadow:
+            0 0 20px rgba(255, 140, 0, 0.6),
+            0 0 40px rgba(255, 102, 0, 0.4),
+            inset 0 0 15px rgba(255, 255, 255, 0.4);
+        text-shadow:
+            0 0 10px rgba(255, 140, 0, 0.6),
+            0 0 20px rgba(255, 140, 0, 0.4);
+    }
+
+    .empty-message {
+        color: #ff8c00;
+        font-style: italic;
+        text-align: center;
+        padding: 25px;
+        font-size: 1.3em;
+        text-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+    }
+</style>
+
+<!-- Стеклянные бабочки (светло-оранжевые и персиковые) -->
+<div class="butterfly" style="top: 10%; left: 15%;">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="glass1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,218,185,0.7);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:rgba(255,160,122,0.8);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(255,200,124,0.7);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <ellipse cx="30" cy="40" rx="20" ry="25" fill="url(#glass1)" opacity="0.8"/>
+        <ellipse cx="70" cy="40" rx="20" ry="25" fill="url(#glass1)" opacity="0.8"/>
+        <ellipse cx="30" cy="65" rx="18" ry="22" fill="url(#glass1)" opacity="0.7"/>
+        <ellipse cx="70" cy="65" rx="18" ry="22" fill="url(#glass1)" opacity="0.7"/>
+        <ellipse cx="50" cy="50" rx="8" ry="30" fill="rgba(255,160,122,0.9)"/>
+    </svg>
+</div>
+<div class="butterfly" style="top: 20%; left: 70%;">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="glass2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,200,124,0.7);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:rgba(255,140,0,0.8);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(255,218,185,0.7);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <ellipse cx="30" cy="40" rx="20" ry="25" fill="url(#glass2)" opacity="0.8"/>
+        <ellipse cx="70" cy="40" rx="20" ry="25" fill="url(#glass2)" opacity="0.8"/>
+        <ellipse cx="30" cy="65" rx="18" ry="22" fill="url(#glass2)" opacity="0.7"/>
+        <ellipse cx="70" cy="65" rx="18" ry="22" fill="url(#glass2)" opacity="0.7"/>
+        <ellipse cx="50" cy="50" rx="8" ry="30" fill="rgba(255,140,0,0.9)"/>
+    </svg>
+</div>
+<div class="butterfly" style="top: 50%; left: 30%;">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="glass3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,228,196,0.7);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:rgba(255,160,122,0.8);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(255,140,0,0.7);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <ellipse cx="30" cy="40" rx="20" ry="25" fill="url(#glass3)" opacity="0.8"/>
+        <ellipse cx="70" cy="40" rx="20" ry="25" fill="url(#glass3)" opacity="0.8"/>
+        <ellipse cx="30" cy="65" rx="18" ry="22" fill="url(#glass3)" opacity="0.7"/>
+        <ellipse cx="70" cy="65" rx="18" ry="22" fill="url(#glass3)" opacity="0.7"/>
+        <ellipse cx="50" cy="50" rx="8" ry="30" fill="rgba(255,228,196,0.9)"/>
+    </svg>
+</div>
+<div class="butterfly" style="top: 70%; left: 80%;">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="glass4" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,218,185,0.7);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:rgba(255,200,124,0.8);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(255,160,122,0.7);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <ellipse cx="30" cy="40" rx="20" ry="25" fill="url(#glass4)" opacity="0.8"/>
+        <ellipse cx="70" cy="40" rx="20" ry="25" fill="url(#glass4)" opacity="0.8"/>
+        <ellipse cx="30" cy="65" rx="18" ry="22" fill="url(#glass4)" opacity="0.7"/>
+        <ellipse cx="70" cy="65" rx="18" ry="22" fill="url(#glass4)" opacity="0.7"/>
+        <ellipse cx="50" cy="50" rx="8" ry="30" fill="rgba(255,218,185,0.9)"/>
+    </svg>
+</div>
+<div class="butterfly" style="top: 40%; left: 10%;">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="glass5" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:rgba(255,140,0,0.7);stop-opacity:1" />
+                <stop offset="50%" style="stop-color:rgba(255,200,124,0.8);stop-opacity:1" />
+                <stop offset="100%" style="stop-color:rgba(255,218,185,0.7);stop-opacity:1" />
+            </linearGradient>
+        </defs>
+        <ellipse cx="30" cy="40" rx="20" ry="25" fill="url(#glass5)" opacity="0.8"/>
+        <ellipse cx="70" cy="40" rx="20" ry="25" fill="url(#glass5)" opacity="0.8"/>
+        <ellipse cx="30" cy="65" rx="18" ry="22" fill="url(#glass5)" opacity="0.7"/>
+        <ellipse cx="70" cy="65" rx="18" ry="22" fill="url(#glass5)" opacity="0.7"/>
+        <ellipse cx="50" cy="50" rx="8" ry="30" fill="rgba(255,140,0,0.9)"/>
+    </svg>
+</div>
+
+
+
+<div class="favorites-container">
+    <h2 class="favorites-title">Ваші обрані</h2>
+    <p class="favorites-subtitle">✨Колекція улюблених речей✨</p>
+
+    {% comment %} ігри {% endcomment %}
+    <div class="category">
+        <h3>Ігри</h3>
+        <ul class="items-list">
+            {% for item in liked_games %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="game">Видалити</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає ігор в обраному</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comment %} Для Авто {% endcomment %}
+    <div class="category">
+        <h3>Для Авто</h3>
+        <ul class="items-list">
+            {% for item in liked_auto %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="auto">Видалити</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає товарів для авто в обраному</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comment %} Для Дому {% endcomment %}
+    <div class="category">
+        <h3>Для Дому</h3>
+        <ul class="items-list">
+            {% for item in liked_home %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="home">Видалити</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає товарів для дому в обраному</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comment %} Електроніка {% endcomment %}
+    <div class="category">
+        <h3>Електроніка</h3>
+        <ul class="items-list">
+            {% for item in liked_electronics %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="electronics">Видалити</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає електроніки в обраному</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comment %} Товари для краси{% endcomment %}
+    <div class="category">
+        <h3>Товари для краси</h3>
+        <ul class="items-list">
+            {% for item in liked_deals %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="deal">Видалити</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає товарів для краси в обраному.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% comment %} Новини {% endcomment %}
+    <div class="category">
+        <h3>Новини</h3>
+        <ul class="items-list">
+            {% for item in liked_news %}
+                <li class="item">
+                    <a href="{{ item.url }}" target="_blank" class="item-link">{{ item.title }}</a>
+                    <a href="#" class="unlike-btn" data-id="{{ item.id }}" data-type="news">Видалитиь</a>
+                </li>
+            {% empty %}
+                <li class="empty-message">Поки що немає новин в обраному.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const buttons = document.querySelectorAll(".unlike-btn");
+
+    buttons.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            const itemId = this.dataset.id;
+            const itemType = this.dataset.type;
+
+            fetch("{% url 'toggle_favorite' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: `id=${itemId}&type=${itemType}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked === false) {
+                    this.closest("li").remove();
+                }
+            });
+        });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}✨Знижки✨{% endblock %}</title>
+    <style>
+        * {
+            font-family: "Apple Chancery", cursive;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff5eb 0%, #ffe8d6 25%, #ffd4a8 50%, #ffb366 75%, #ff8c42 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* БАБОЧКИ */
+        .butterfly {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 5px rgba(255, 140, 66, 0.5));
+        }
+
+        .butterfly::before,
+        .butterfly::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 25px;
+            background: linear-gradient(135deg, #ff8c42 0%, #ffa15f 50%, #ffb366 100%);
+            border-radius: 50% 50% 50% 0;
+            animation: wing-left 1.5s ease-in-out infinite;
+        }
+
+        .butterfly::before {
+            left: 0;
+            transform-origin: right center;
+        }
+
+        .butterfly::after {
+            right: 0;
+            transform: scaleX(-1);
+            transform-origin: left center;
+            animation: wing-right 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wing-left {
+            0%, 100% { transform: rotateY(0deg); }
+            50% { transform: rotateY(-60deg); }
+        }
+
+        @keyframes wing-right {
+            0%, 100% { transform: scaleX(-1) rotateY(0deg); }
+            50% { transform: scaleX(-1) rotateY(60deg); }
+        }
+
+        .butterfly1 {
+            top: 15%;
+            left: 10%;
+            animation: fly1 25s ease-in-out infinite;
+        }
+
+        .butterfly2 {
+            top: 40%;
+            right: 15%;
+            animation: fly2 30s ease-in-out infinite;
+        }
+
+        .butterfly3 {
+            top: 60%;
+            left: 20%;
+            animation: fly3 28s ease-in-out infinite;
+        }
+
+        .butterfly4 {
+            top: 25%;
+            right: 30%;
+            animation: fly4 22s ease-in-out infinite;
+        }
+
+        .butterfly5 {
+            top: 70%;
+            right: 10%;
+            animation: fly5 26s ease-in-out infinite;
+        }
+
+        @keyframes fly1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(200px, -100px) rotate(15deg); }
+            50% { transform: translate(100px, 150px) rotate(-10deg); }
+            75% { transform: translate(-150px, 50px) rotate(20deg); }
+        }
+
+        @keyframes fly2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-250px, 100px) rotate(-20deg); }
+            66% { transform: translate(150px, -120px) rotate(15deg); }
+        }
+
+        @keyframes fly3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            30% { transform: translate(180px, -80px) rotate(25deg); }
+            60% { transform: translate(-200px, 120px) rotate(-15deg); }
+        }
+
+        @keyframes fly4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            40% { transform: translate(-150px, 150px) rotate(18deg); }
+            80% { transform: translate(220px, -90px) rotate(-22deg); }
+        }
+
+        @keyframes fly5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            35% { transform: translate(-180px, -130px) rotate(-18deg); }
+            70% { transform: translate(160px, 100px) rotate(20deg); }
+        }
+
+        /* МОЩНЫЙ СТЕКЛЯННЫЙ NAVBAR */
+        nav {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            padding: 15px 30px;
+            border-bottom: 2px solid rgba(255, 140, 66, 0.3);
+            box-shadow:
+                0 8px 32px rgba(255, 140, 66, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(255, 140, 66, 0.2);
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Стеклянный блик на navbar */
+        nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            animation: navShine 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes navShine {
+            0% { left: -100%; }
+            50% { left: 150%; }
+            100% { left: -100%; }
+        }
+
+        /* НЕОНОВЫЕ ССЫЛКИ */
+        nav a {
+            color: #ff8c42;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            text-shadow:
+                0 0 10px rgba(255, 140, 66, 0.8),
+                0 0 20px rgba(255, 140, 66, 0.5),
+                0 0 30px rgba(255, 140, 66, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff8c42, #ffa15f);
+            box-shadow: 0 0 10px rgba(255, 140, 66, 0.8);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: #ffa15f;
+            text-shadow:
+                0 0 15px rgba(255, 161, 95, 1),
+                0 0 30px rgba(255, 161, 95, 0.7),
+                0 0 45px rgba(255, 161, 95, 0.5);
+            transform: translateY(-2px);
+        }
+
+        nav span {
+            color: #ff8c42;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+            margin-right: 15px;
+        }
+
+        /* DROPDOWN МЕНЮ С СТЕКЛОМ */
+        .nav-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            cursor: pointer;
+            color: #ff8c42;
+            text-decoration: none;
+            margin-right: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            text-shadow:
+                0 0 10px rgba(255, 140, 66, 0.8),
+                0 0 20px rgba(255, 140, 66, 0.5);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        /* Красивая стрелочка справа */
+        .dropbtn::after {
+            content: "◆";
+            font-size: 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            color: #ffa15f;
+            text-shadow: 0 0 10px rgba(255, 161, 95, 0.8);
+        }
+
+        .nav-item.open .dropbtn::after {
+            transform: rotate(90deg);
+            color: #ff8c42;
+        }
+
+        .dropbtn::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff8c42, #ffa15f);
+            box-shadow: 0 0 10px rgba(255, 140, 66, 0.8);
+            transition: width 0.3s ease;
+        }
+
+        .dropbtn:hover::before {
+            width: 100%;
+        }
+
+        .dropbtn:hover {
+            color: #ffa15f;
+            text-shadow:
+                0 0 15px rgba(255, 161, 95, 1),
+                0 0 30px rgba(255, 161, 95, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* СТЕКЛЯННОЕ ВЫПАДАЮЩЕЕ МЕНЮ */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 15px;
+            min-width: 240px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 2px solid rgba(255, 140, 66, 0.4);
+            border-radius: 15px;
+            box-shadow:
+                0 15px 45px rgba(255, 140, 66, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(255, 140, 66, 0.2);
+            z-index: 1000;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Стеклянный блик на dropdown */
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: dropdownShine 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes dropdownShine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .dropdown-content.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-content a {
+            color: #ff8c42;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 0;
+            text-shadow: 0 0 8px rgba(255, 140, 66, 0.6);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.15);
+            position: relative;
+        }
+
+        .dropdown-content a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(180deg, #ff8c42, #ffa15f);
+            box-shadow: 0 0 10px rgba(255, 140, 66, 0.8);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-content a:hover::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-content a:hover {
+            background: rgba(255, 140, 66, 0.2);
+            color: #ffa15f;
+            text-shadow:
+                0 0 12px rgba(255, 161, 95, 0.9),
+                0 0 20px rgba(255, 161, 95, 0.5);
+            transform: translateX(8px);
+        }
+
+        /* КОНТЕЙНЕР */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 35px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            border: 2px solid rgba(255, 140, 66, 0.3);
+            box-shadow:
+                0 15px 50px rgba(255, 140, 66, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -1px 0 rgba(255, 140, 66, 0.2);
+            color: #5a3a1a;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        /* Стеклянный блик на контейнере */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: containerShine 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes containerShine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        h1, h2, h3 {
+            color: #ff8c42;
+            text-shadow:
+                0 0 15px rgba(255, 140, 66, 0.8),
+                0 0 25px rgba(255, 140, 66, 0.4);
+            position: relative;
+        }
+
+        input, button {
+            padding: 12px 18px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 140, 66, 0.4);
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            color: #ff8c42;
+            font-family: "Apple Chancery", cursive;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff8c42;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow:
+                0 0 15px rgba(255, 140, 66, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        button {
+            cursor: pointer;
+            background: rgba(255, 140, 66, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid #ff8c42;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+            box-shadow:
+                0 4px 15px rgba(255, 140, 66, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        button:hover {
+            background: rgba(255, 140, 66, 0.4);
+            box-shadow:
+                0 0 20px rgba(255, 140, 66, 0.6),
+                0 0 30px rgba(255, 140, 66, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* СТИЛИ ДЛЯ НОВОСТЕЙ */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: relative;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.2);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            transition: all 0.3s ease;
+            box-shadow:
+                0 5px 20px rgba(255, 140, 66, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .news-item:hover {
+            background: rgba(255, 140, 66, 0.15);
+            transform: translateX(5px);
+            box-shadow:
+                0 8px 30px rgba(255, 140, 66, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .news-item img {
+            width: 180px;
+            height: auto;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid rgba(255, 140, 66, 0.3);
+            box-shadow: 0 5px 15px rgba(255, 140, 66, 0.2);
+        }
+
+        .news-item h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            color: #ff8c42;
+        }
+
+        .news-item h3 a {
+            text-decoration: none;
+            color: #ff8c42;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .news-item h3 a:hover {
+            text-decoration: none;
+            color: #ffa15f;
+            text-shadow: 0 0 15px rgba(255, 161, 95, 0.8);
+        }
+
+        .news-item p {
+            margin: 0;
+            color: #8a5a2a;
+        }
+
+        /* TOOLTIP */
+        #levels-tooltip {
+            display: none;
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 140, 66, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            color: #ff8c42;
+            box-shadow:
+                0 10px 30px rgba(255, 140, 66, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        #levels-tooltip strong {
+            color: #ff8c42;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+        }
+
+        /* МОДАЛЬНОЕ ОКНО */
+        #loginModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 140, 66, 0.3);
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #loginModal > div {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(25px) saturate(180%);
+            border: 2px solid rgba(255, 140, 66, 0.5);
+            border-radius: 20px;
+            padding: 35px;
+            width: 350px;
+            text-align: center;
+            box-shadow:
+                0 20px 60px rgba(255, 140, 66, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #loginModal > div::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: modalShine 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes modalShine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        #loginModal h3 {
+            color: #ff8c42;
+            text-shadow: 0 0 15px rgba(255, 140, 66, 0.8);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        #loginModal p {
+            color: #8a5a2a;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #loginModal a {
+            display: block;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 140, 66, 0.3);
+            backdrop-filter: blur(10px);
+            color: #ff8c42;
+            border: 2px solid #ff8c42;
+            border-radius: 10px;
+            text-decoration: none;
+            font-family: "Apple Chancery", cursive;
+            text-shadow: 0 0 10px rgba(255, 140, 66, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow:
+                0 4px 15px rgba(255, 140, 66, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        #loginModal a:hover {
+            background: rgba(255, 140, 66, 0.4);
+            box-shadow:
+                0 0 20px rgba(255, 140, 66, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<!-- БАБОЧКИ -->
+<div class="butterfly butterfly1"></div>
+<div class="butterfly butterfly2"></div>
+<div class="butterfly butterfly3"></div>
+<div class="butterfly butterfly4"></div>
+<div class="butterfly butterfly5"></div>
+
+<nav>
+    <div class="nav-item dropdown">
+        <a href="{% url 'deals_list' %}" class="dropbtn">
+             ✨Знижки✨
+        </a>
+        <div class="dropdown-content">
+            <a href="{% url 'games_list' %}">ігри</a>
+            <a href="{% url 'deals_list' %}">Краса</a>
+            <a href="{% url 'electronics_list' %}">Електроніка</a>
+            <a href="{% url 'home_list' %}">Товары для дома</a>
+            <a href="{% url 'auto_list' %}">Товары для Авто</a>
+        </div>
+    </div>
+
+    <a href="{% url 'news_list' %}">Новини</a>
+    <a href="{% url 'profile' %}">Профіль</a>
+    <a href="{% url 'liked_items' %}">Вибрані</a>
+
+    {% if user.is_authenticated %}
+        <span>Привет, {{ user.username }}!</span>
+        <a href="{% url 'logout' %}">Увійти</a>
+    {% else %}
+        <a href="{% url 'register' %}">Реєстрація</a>
+    {% endif %}
+</nav>
+
+<div id="levels-tooltip">
+    <strong>Рівні користувача:</strong>
+    <ul>
+        <li>1 рівень: 0-2 обраних</li>
+        <li>2 рівень: 3-5 обраних</li>
+        <li>3 рівень: 6-8 обраних</li>
+        <li>4 рівень: 9-11 обраних</li>
+        <li>5 рівень: 12+ обраних</li>
+    </ul>
+</div>
+
+<div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: #ff8c42; text-shadow: 0 0 10px rgba(255, 140, 66, 0.8);">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+{% block scripts %}{% endblock %}
+
+<!-- Модальное окно -->
+<div id="loginModal">
+    <div>
+        <h3>Тільки для зареєстрованих</h3>
+        <p>Щоб додавати до обраного — увійдіть або зареєструйтесь.</p>
+
+        <a href="{% url 'login' %}">Увійти</a>
+        <a href="{% url 'register' %}">Реєстрація</a>
+
+        <button onclick="closeLoginModal()" style="margin-top:15px; width: 100%;">
+            Закрити
+        </button>
+    </div>
+</div>
+
+<script>
+// Dropdown меню
+document.addEventListener("DOMContentLoaded", function() {
+    const dropdown = document.querySelector(".nav-item.dropdown");
+    const dropbtn = dropdown.querySelector(".dropbtn");
+    const content = dropdown.querySelector(".dropdown-content");
+
+    dropbtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        dropdown.classList.toggle("open");
+        content.classList.toggle("show");
+    });
+
+    // Закрытие при клике вне
+    document.addEventListener("click", function(e) {
+        if (!dropdown.contains(e.target)) {
+            content.classList.remove("show");
+            dropdown.classList.remove("open");
+        }
+    });
+});
+
+// Модальное окно
+function openLoginModal() {
+    document.getElementById("loginModal").style.display = "flex";
+}
+
+function closeLoginModal() {
+    document.getElementById("loginModal").style.display = "none";
+}
+
+// Лайки
+document.addEventListener("DOMContentLoaded", function () {
+    const userIsAuth = {{ user.is_authenticated|yesno:"true,false" }};
+
+    document.querySelectorAll(".like-btn").forEach(btn => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            if (!userIsAuth) {
+                openLoginModal();
+                return;
+            }
+
+            const itemId = this.dataset.id;
+            const type = this.dataset.type;
+
+            fetch(`/profile/like/${type}/${itemId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const heart = document.getElementById(`${type}-heart-${itemId}`);
+                    heart.textContent = data.liked ? "❤️" : "🤍";
+                });
+        });
+    });
+});
+
+// Tooltip
+const info = document.getElementById('levels-info');
+const tooltip = document.getElementById('levels-tooltip');
+
+if (info) {
+    info.addEventListener('mouseover', () => tooltip.style.display = 'block');
+    info.addEventListener('mouseout', () => tooltip.style.display = 'none');
+}
+
+// Toggle favorite
+document.addEventListener("DOMContentLoaded", function() {
+    const likeButtons = document.querySelectorAll(".like-btn");
+
+    likeButtons.forEach(btn => {
+        btn.addEventListener("click", function(e) {
+            e.preventDefault();
+            const itemId = this.dataset.id;
+            const itemType = this.dataset.type;
+
+            fetch("{% url 'toggle_favorite' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: `id=${itemId}&type=${itemType}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const heart = document.getElementById(`${itemType}-heart-${itemId}`);
+                if(data.liked) {
+                    heart.textContent = "❤️";
+                } else {
+                    heart.textContent = "🤍";
+                }
+            })
+        });
+    });
+});
+</script>
+
+</body>
